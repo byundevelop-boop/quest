@@ -1,0 +1,55 @@
+plugins {
+    // 라이브러리 모듈 + DI + Kotlin 빌드를 위해 필요한 플러그인
+    id 'com.android.library'
+    id 'com.google.dagger.hilt.android'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+android {
+    // 네트워크 계층 패키지 네임과 컴파일 SDK
+    namespace 'com.kurly.android.quest.core.data'
+    compileSdk 34
+
+    defaultConfig {
+        // 라이브러리 최소 지원 Android 버전
+        minSdk 23
+    }
+
+    compileOptions {
+        // Java/Kotlin 바이트코드 호환성 고정
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    // 상위 계층이 필요로 하는 도메인 API는 API 노출
+    api project(':core:domain')
+    // 모델 의존은 내부 구현에서만 사용
+    implementation project(':core:model')
+    // 테스트 응답을 위한 Mock 서버 모듈
+    implementation project(':mockserver')
+
+    // 네트워크 통신/로깅/파싱
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    implementation 'androidx.datastore:datastore-preferences:1.1.1'
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+
+    // 테스트 코드용 JUnit
+    testImplementation 'junit:junit:4.13.2'
+}
+
+kapt {
+    // Dagger/Hilt 에러 타입 해석 보강
+    correctErrorTypes true
+}
